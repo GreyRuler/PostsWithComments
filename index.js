@@ -18,8 +18,7 @@ class CommentView {
   static markup(comment) {
     return `
 			<div class="comment">
-				<img src="${comment.avatar}" alt="Аватарка"
-					 style="background-color: ${comment.avatar}">
+				<img src="${comment.avatar}" alt="Аватарка">
 				<div class="info">
 					<div class="title-comment">
 						<span class="author">${comment.author}</span>
@@ -56,7 +55,7 @@ class PostView {
     return `
 			<div class="post">
 				<header>
-					<img src="${post.avatar}" style="background-color: ${post.avatar}"
+					<img src="${post.avatar}"
 					 	 alt="Аватарка">
 					<div class="title-post">
 						<h4 class="author">${post.author}</h4>
@@ -106,7 +105,7 @@ __webpack_require__.r(__webpack_exports__);
 
 class PostsView {
   static get url() {
-    return 'https://posts-vgnn.onrender.com';
+    return 'https://posts-vgnn.onrender.com:3000';
   }
   static get markup() {
     return `

@@ -4,8 +4,7 @@ export default class CommentView {
 	static markup(comment) {
 		return `
 			<div class="comment">
-				<img src="${comment.avatar}" alt="Аватарка"
-					 style="background-color: ${comment.avatar}">
+				<img src="${comment.avatar}" alt="Аватарка">
 				<div class="info">
 					<div class="title-comment">
 						<span class="author">${comment.author}</span>

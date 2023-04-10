@@ -9,7 +9,7 @@ export default class PostView {
 		return `
 			<div class="post">
 				<header>
-					<img src="${post.avatar}" style="background-color: ${post.avatar}"
+					<img src="${post.avatar}"
 					 	 alt="Аватарка">
 					<div class="title-post">
 						<h4 class="author">${post.author}</h4>

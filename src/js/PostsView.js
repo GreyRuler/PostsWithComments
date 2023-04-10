@@ -11,7 +11,7 @@ import CommentView from './CommentView';
 
 export default class PostsView {
 	static get url() {
-		return 'http://172.19.101.112:3000';
+		return 'https://posts-vgnn.onrender.com';
 	}
 
 	static get markup() {

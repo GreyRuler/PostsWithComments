@@ -84,7 +84,7 @@ body {
 }
 
 .info {
-	flex-grow: 1;
+	flex: 1;
 }
 
 .title-comment {

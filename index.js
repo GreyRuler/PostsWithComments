@@ -105,7 +105,7 @@ __webpack_require__.r(__webpack_exports__);
 
 class PostsView {
   static get url() {
-    return 'https://posts-vgnn.onrender.com:3000';
+    return 'https://posts-vgnn.onrender.com';
   }
   static get markup() {
     return `
@@ -127,21 +127,25 @@ class PostsView {
     rxjs_ajax__WEBPACK_IMPORTED_MODULE_2__.ajax.getJSON(postUrl).pipe((0,rxjs__WEBPACK_IMPORTED_MODULE_3__.map)(response => response.data), (0,rxjs__WEBPACK_IMPORTED_MODULE_4__.catchError)(error => {
       // eslint-disable-next-line no-console
       console.error('error: ', error);
-      return (0,rxjs__WEBPACK_IMPORTED_MODULE_5__.of)(error);
+      return (0,rxjs__WEBPACK_IMPORTED_MODULE_5__.of)([]);
+    }), (0,rxjs__WEBPACK_IMPORTED_MODULE_6__.concatAll)(), (0,rxjs__WEBPACK_IMPORTED_MODULE_3__.map)(async post => {
+      try {
+        const commentsUrl = `${PostsView.url}/posts/${post.id}/comments/latest`;
+        const response = await fetch(commentsUrl);
+        const json = await response.json();
+        post.comments = json.data;
+      } catch (e) {
+        // eslint-disable-next-line no-console
+        console.error(e);
+      }
+      return post;
     }), (0,rxjs__WEBPACK_IMPORTED_MODULE_6__.concatAll)()).subscribe(post => {
       const postContainer = document.createElement('div');
       const postView = new _PostView__WEBPACK_IMPORTED_MODULE_0__["default"](postContainer, post);
       postView.bindToDOM();
       this.postsContainer.append(postContainer);
-      const commentsUrl = `${PostsView.url}/posts/${post.id}/comments/latest`;
-      rxjs_ajax__WEBPACK_IMPORTED_MODULE_2__.ajax.getJSON(commentsUrl).pipe((0,rxjs__WEBPACK_IMPORTED_MODULE_3__.map)(response => response.data), (0,rxjs__WEBPACK_IMPORTED_MODULE_4__.catchError)(error => {
-        // eslint-disable-next-line no-console
-        console.error('error: ', error);
-        return (0,rxjs__WEBPACK_IMPORTED_MODULE_5__.of)(error);
-      })).subscribe(comments => {
-        comments.forEach(comment => {
-          postView.comments.insertAdjacentHTML('beforeend', _CommentView__WEBPACK_IMPORTED_MODULE_1__["default"].markup(comment));
-        });
+      post.comments.forEach(comment => {
+        postView.comments.insertAdjacentHTML('beforeend', _CommentView__WEBPACK_IMPORTED_MODULE_1__["default"].markup(comment));
       });
     });
   }

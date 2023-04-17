@@ -1,10 +1,7 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { ajax } from 'rxjs/ajax';
 import {
-	catchError,
-	concatAll,
-	map, mergeAll, mergeWith,
-	of, switchAll, switchMap,
+	catchError, concatAll, map, of,
 } from 'rxjs';
 import PostView from './PostView';
 import CommentView from './CommentView';
@@ -42,11 +39,16 @@ export default class PostsView {
 			}),
 			concatAll(),
 			map(async (post) => {
-				const commentsUrl = `${PostsView.url}/posts/${post.id}/comments/latest`;
-				const response = await fetch(commentsUrl)
-				const json = await response.json()
-				post.comments = json.data
-				return post
+				try {
+					const commentsUrl = `${PostsView.url}/posts/${post.id}/comments/latest`;
+					const response = await fetch(commentsUrl);
+					const json = await response.json();
+					post.comments = json.data;
+				} catch (e) {
+					// eslint-disable-next-line no-console
+					console.error(e);
+				}
+				return post;
 			}),
 			concatAll(),
 		).subscribe((post) => {

@@ -3,15 +3,15 @@ import { ajax } from 'rxjs/ajax';
 import {
 	catchError,
 	concatAll,
-	map,
-	of,
+	map, mergeAll, mergeWith,
+	of, switchAll, switchMap,
 } from 'rxjs';
 import PostView from './PostView';
 import CommentView from './CommentView';
 
 export default class PostsView {
 	static get url() {
-		return 'https://posts-vgnn.onrender.com:3000';
+		return 'https://posts-vgnn.onrender.com';
 	}
 
 	static get markup() {
@@ -38,7 +38,15 @@ export default class PostsView {
 			catchError((error) => {
 				// eslint-disable-next-line no-console
 				console.error('error: ', error);
-				return of(error);
+				return of([]);
+			}),
+			concatAll(),
+			map(async (post) => {
+				const commentsUrl = `${PostsView.url}/posts/${post.id}/comments/latest`;
+				const response = await fetch(commentsUrl)
+				const json = await response.json()
+				post.comments = json.data
+				return post
 			}),
 			concatAll(),
 		).subscribe((post) => {
@@ -46,21 +54,11 @@ export default class PostsView {
 			const postView = new PostView(postContainer, post);
 			postView.bindToDOM();
 			this.postsContainer.append(postContainer);
-			const commentsUrl = `${PostsView.url}/posts/${post.id}/comments/latest`;
-			ajax.getJSON(commentsUrl).pipe(
-				map((response) => response.data),
-				catchError((error) => {
-					// eslint-disable-next-line no-console
-					console.error('error: ', error);
-					return of(error);
-				}),
-			).subscribe((comments) => {
-				comments.forEach((comment) => {
-					postView.comments.insertAdjacentHTML(
-						'beforeend',
-						CommentView.markup(comment),
-					);
-				});
+			post.comments.forEach((comment) => {
+				postView.comments.insertAdjacentHTML(
+					'beforeend',
+					CommentView.markup(comment),
+				);
 			});
 		});
 	}
